@@ -3,21 +3,29 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from "react-native-vector-icons/Feather";
 import { View, Text } from "react-native";
-
+import { requestUserPermission, setupBackgroundHandler } from "./src/components/NotificationService";
+import messaging from "@react-native-firebase/messaging";
+import { useEffect } from 'react';
+import Notification from './src/components/NotificationService';
 // Import your real HomeScreen UI
 import HomeScreen from '../pages/HomeScreen';
 import UsersScreen from '../pages/UserScreen';
+import SplashScreen from '../pages/SplashScreen';
 
 const Tab = createBottomTabNavigator();
 
-// --- Other Screens ---
-function ChatScreen() {
-  return <View><Text style={{ fontSize: 30 }}>Chat Screen</Text></View>;
-}
 
-function NotificationScreen() {
-  return <View><Text style={{ fontSize: 30 }}>Notifications</Text></View>;
-}
+useEffect(() => {
+    requestUserPermission();
+    setupBackgroundHandler();
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      console.log("Message received in foreground:", remoteMessage);
+    });
+
+    return unsubscribe;
+  }, []);
+
 
 function MenuScreen() {
   return <View><Text style={{ fontSize: 30 }}>Menu Screen</Text></View>;
@@ -26,6 +34,7 @@ function MenuScreen() {
 export default function App() {
   return (
     <NavigationContainer>
+       
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -54,54 +63,27 @@ export default function App() {
         />
 
         {/* CHATS */}
+
+
         <Tab.Screen
-          name="Chats"
-          component={ChatScreen}
+          name="Splash"
+          component={SplashScreen}
           options={{
-            tabBarIcon: () => (
-              <View>
-                <Icon name="message-square" size={26} color="#333" />
-                <View style={{
-                  position: "absolute",
-                  top: -3,
-                  right: -10,
-                  backgroundColor: "red",
-                  width: 16,
-                  height: 16,
-                  borderRadius: 8,
-                  justifyContent: "center",
-                  alignItems: "center"
-                }}>
-                  <Text style={{ color: "#fff", fontSize: 10 }}>N</Text>
-                </View>
-              </View>
+            headerShown: false,
+            tabBarIcon: ({ focused }) => (
+              <Icon name="activity" size={26} color={focused ? "#ff4d4d" : "#333"} />
             ),
+            tabBarLabel: "Splash"
           }}
         />
 
+
         {/* NOTIFICATIONS */}
-        <Tab.Screen
-          name="Notifications"
-          component={NotificationScreen}
+          <Tab.Screen
+          name="Users"
+          component={Notification}
           options={{
-            tabBarIcon: () => (
-              <View>
-                <Icon name="bell" size={26} color="#333" />
-                <View style={{
-                  position: "absolute",
-                  top: -3,
-                  right: -10,
-                  backgroundColor: "red",
-                  width: 16,
-                  height: 16,
-                  borderRadius: 8,
-                  justifyContent: "center",
-                  alignItems: "center"
-                }}>
-                  <Text style={{ color: "#fff", fontSize: 10 }}>9</Text>
-                </View>
-              </View>
-            ),
+            tabBarIcon: () => <Icon name="users" size={26} color="#333" />,
           }}
         />
 
