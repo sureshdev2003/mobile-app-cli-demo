@@ -3,10 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from "react-native-vector-icons/Feather";
 import { View, Text } from "react-native";
-import { requestUserPermission, setupBackgroundHandler } from "./src/components/NotificationService";
+import { requestUserPermission, setupBackgroundHandler } from "../components/Notification";
 import messaging from "@react-native-firebase/messaging";
 import { useEffect } from 'react';
-import Notification from './src/components/NotificationService';
+import Notification from '../components/NotificationService';
 // Import your real HomeScreen UI
 import HomeScreen from '../pages/HomeScreen';
 import UsersScreen from '../pages/UserScreen';
