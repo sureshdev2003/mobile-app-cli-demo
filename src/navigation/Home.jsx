@@ -3,10 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from "react-native-vector-icons/Feather";
 import { View, Text } from "react-native";
-import { requestUserPermission, setupBackgroundHandler } from "../components/Notification";
-import messaging from "@react-native-firebase/messaging";
-import { useEffect } from 'react';
-import Notification from '../components/NotificationService';
+
+import Notification from '../components/Notification';
+
 // Import your real HomeScreen UI
 import HomeScreen from '../pages/HomeScreen';
 import UsersScreen from '../pages/UserScreen';
@@ -15,16 +14,6 @@ import SplashScreen from '../pages/SplashScreen';
 const Tab = createBottomTabNavigator();
 
 
-useEffect(() => {
-    requestUserPermission();
-    setupBackgroundHandler();
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log("Message received in foreground:", remoteMessage);
-    });
-
-    return unsubscribe;
-  }, []);
 
 
 function MenuScreen() {
@@ -80,7 +69,7 @@ export default function App() {
 
         {/* NOTIFICATIONS */}
           <Tab.Screen
-          name="Users"
+          name="Notifications"
           component={Notification}
           options={{
             tabBarIcon: () => <Icon name="users" size={26} color="#333" />,

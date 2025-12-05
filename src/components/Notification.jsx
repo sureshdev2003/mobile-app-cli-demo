@@ -1,25 +1,33 @@
-import messaging from "@react-native-firebase/messaging";
-import { Alert, Platform } from "react-native";
+import { StyleSheet, Text, View,PermissionsAndroid,Alert } from 'react-native'
+import React,{useEffect} from 'react'
 
-export async function requestUserPermission() {
-  const authStatus = await messaging().requestPermission();
-  const enabled =
-    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  if (enabled) {
-    console.log("Notification permission enabled");
-    getFcmToken();
-  }
+const Notification = () => {
+   const requsetPermission = async()=>{
+      try{
+        const req=await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS)
+          console.log("Permission",req);
+          console.log("result=2",PermissionsAndroid.RESULTS.GRANTED);
+        if(req===PermissionsAndroid.RESULTS.GRANTED){
+          console.log("You can use the notification");
+        }else{
+         Alert.alert("Notification permission denied");
+        }
+      }
+    catch(err){
+      console.log(err);
+      
+    }}
+    useEffect(()=>{
+      requsetPermission();
+    },[]);
+  return (
+    <View>
+      <Text>Notification</Text>
+    </View>
+  )
 }
 
-async function getFcmToken() {
-  const token = await messaging().getToken();
-  console.log("FCM TOKEN:", token);
-}
+export default Notification
 
-export function setupBackgroundHandler() {
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log("Message handled in background!", remoteMessage);
-  });
-}
+const styles = StyleSheet.create({})
